@@ -1,29 +1,22 @@
 using System.Numerics;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/task3/billalhossain.bhj@gmail.com", (string? x, string? y) =>
-{    
-    if(!int.TryParse(x, out var a ) | !int.TryParse(y, out var b ))
+app.MapGet("/app/billalhossain_bhj_gmail_com", (string? x, string? y) =>
+{
+    if (!BigInteger.TryParse(x, NumberStyles.Integer, CultureInfo.InvariantCulture, out var a) ||
+        !BigInteger.TryParse(y, NumberStyles.Integer, CultureInfo.InvariantCulture, out var b))
     {
         return "NaN";
     }
 
-    static int gdc(int a, int b)
-    {
-        while(b!=0)
-        {
-            int temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return a;
-    }
+    var lcm = a.IsZero || b.IsZero
+        ? BigInteger.Zero
+        : BigInteger.Abs(a / BigInteger.GreatestCommonDivisor(a, b) * b);
 
-    int lcm = (a/ gdc(a,b)) * b;
-
-    return lcm.ToString();
+    return lcm.ToString(CultureInfo.InvariantCulture);
 });
 
 app.Run();
