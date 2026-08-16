@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/workspaces/Asp.Net-task3/Asp.Net-task3.csproj": {}
+    "/workspaces/Asp.Net-tasks/Asp.Net-task3.csproj": {}
   },
   "projects": {
-    "/workspaces/Asp.Net-task3/Asp.Net-task3.csproj": {
+    "/workspaces/Asp.Net-tasks/Asp.Net-task3.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/Asp.Net-task3/Asp.Net-task3.csproj",
+        "projectUniqueName": "/workspaces/Asp.Net-tasks/Asp.Net-task3.csproj",
         "projectName": "Asp.Net-task3",
-        "projectPath": "/workspaces/Asp.Net-task3/Asp.Net-task3.csproj",
+        "projectPath": "/workspaces/Asp.Net-tasks/Asp.Net-task3.csproj",
         "packagesPath": "/home/vscode/.nuget/packages/",
-        "outputPath": "/workspaces/Asp.Net-task3/obj/",
+        "outputPath": "/workspaces/Asp.Net-tasks/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/vscode/.nuget/NuGet/NuGet.Config"
