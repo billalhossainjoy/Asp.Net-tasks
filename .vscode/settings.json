@@ -1,0 +1,29 @@
+{
+    "editor.quickSuggestions": {
+        "comments": "off",
+        "strings": "on",
+        "other": "on"
+    },
+    "bootstrapIntelliSense": {
+        "enable": true,
+        "bsVersion": "5.3.3",
+        "enableHover": true,
+        "enableColorPreview": true,
+        "sortOnSave": false,
+        "languageSupport": [
+            "html",
+            "css",
+            "php",
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "typescriptreact",
+            "vue",
+            "svelte",
+            "handlebars",
+            "razor",
+            "cshtml",
+            "aspnetcorerazor"
+        ]
+    }
+}

@@ -6,12 +6,15 @@
             </a>
 
             <div class="navbar-nav">
-                <a class="bg-white">
+                <a 
+                asp-controller="Auth"
+                asp-action="Login" 
+                class="bg-white text-decoration-none d-flex justify-content-center align-items-center px-2 py-2 fw-bold">
                     Get Start
                 </a>
                 <a class="nav-link underline"
-                   asp-controller="Home"
-                   asp-action="About">
+                   asp-controller="Auth"
+                   asp-action="Logout">
                     Logout
                 </a>
             </div>

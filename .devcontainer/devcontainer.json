@@ -29,6 +29,7 @@
 		"vscode": {
 			"extensions": [
 				"ms-dotnettools.csdevkit",
+				"hossaini.bootstrap-intellisense",
 				"humao.rest-client",
 				"openai.chatgpt"
 			]
