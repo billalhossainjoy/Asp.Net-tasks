@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,24 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+
+// Authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddCookie(option =>
+{
+    option.LoginPath = "/auth/login";
+    option.AccessDeniedPath = "/auth/login";
+
+    option.Cookie.Name = "User.Auth";
+    option.Cookie.HttpOnly= true;
+    option.Cookie.SameSite= SameSiteMode.Lax;
+
+    option.ExpireTimeSpan = TimeSpan.FromHours(10);
+    option.SlidingExpiration = true;
+});
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 

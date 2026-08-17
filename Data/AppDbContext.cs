@@ -15,7 +15,7 @@ public sealed class AppDbContext : DbContext
             entity.ToTable("Users");
 
             entity.HasIndex(x => x.Email)
-            .IsUnique().HasDatabaseName("Users_Email");
+            .IsUnique().HasDatabaseName("Email_Users");
         });
     }
 }
