@@ -6,16 +6,20 @@
             </a>
 
             <div class="navbar-nav">
-                @if (User.Identity?.IsAuthenticated == true)
+                @if (User.Identity?.IsAuthenticated == true) 
                 {
                     <span class="navbar-text text-white me-3">
                         Hello,
                         <strong>@User.Identity.Name</strong>
                     </span>
 
-                    <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                    <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex justify-content-end align-items-center">
 
-                        <button type="submit" class="btn btn-link nav-link text-white p-0 d-flex justify-content-end align-items-center">
+                        <button type="submit"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Click here to save"
+                         class="btn btn-link nav-link text-white p-0 d-flex justify-content-end align-items-center" >
                            <img src="logout.png" style="width: 20px;"/>
                         </button>
 
