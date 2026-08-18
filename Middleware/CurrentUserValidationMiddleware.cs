@@ -36,7 +36,13 @@ public sealed class CurrentValidationMiddleware
                 x.Status
             }).SingleOrDefaultAsync();
 
-            if (user is null || user.Status == UserStatus.Blocked)
+            if (user is null)
+            {
+                await RejectAuthentication(context);
+                return;
+            }
+
+                        if (user.Status == UserStatus.Blocked)
             {
                 await RejectAuthentication(context);
                 return;

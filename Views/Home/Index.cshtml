@@ -63,12 +63,15 @@
             });
         });
 
-        document
-            .querySelectorAll('[data-bs-toggle="tooltip"]')
-            .forEach(element =>
-            {
-                new bootstrap.Tooltip(element);
-            });
+        const tooltipElements =
+            document.querySelectorAll(
+                '[data-bs-toggle="tooltip"]'
+            );
+
+        tooltipElements.forEach(element =>
+        {
+            new bootstrap.Tooltip(element);
+        });
     </script>
 }
 
@@ -79,56 +82,52 @@
     <div class="card-header bg-white p-0">
 
     <!-- Toolbar -->
-    <div class="d-flex align-items-center gap-2 border-bottom bg-white p-3">
+    <div class="d-flex align-items-center gap-2 p-3 bg-white border-bottom">
 
-        <!-- Required: Block with text -->
-        <button type="submit"
-                id="blockButton"
-                asp-controller="Home"
-                asp-action="Block"
-                class="btn btn-outline-danger cursor-pointer"
-                disabled>
-            Block
-        </button>
+    <button type="submit"
+            id="blockButton"
+            asp-controller="Home"
+            asp-action="Block"
+            class="btn btn-outline-danger btn-sm"
+            disabled>
+        Block
+    </button>
 
-        <!-- Unblock -->
-        <button type="submit"
-                id="unblockButton"
-                asp-controller="Home"
-                asp-action="Unblock"
-                class="btn btn-outline-secondary cursor-pointer"
-                data-bs-toggle="tooltip"
-                title="Unblock selected users"
-                disabled>
+    <button type="submit"
+            id="unblockButton"
+            asp-controller="Home"
+            asp-action="Unblock"
+            class="btn btn-outline-secondary btn-sm"
+            data-bs-toggle="tooltip"
+            data-bs-title="Unblock selected users"
+            disabled>
 
-            <i class="bi bi-unlock"></i>
-        </button>
+        <i class="bi bi-unlock"></i>
+    </button>
 
-        <!-- Delete -->
-        <button type="submit"
-                id="deleteButton"
-                asp-controller="Home"
-                asp-action="Delete"
-                class="btn btn-outline-danger cursor-pointer"
-                data-bs-toggle="tooltip"
-                title="Delete selected users"
-                disabled>
+    <button type="submit"
+            id="deleteButton"
+            asp-controller="Home"
+            asp-action="Delete"
+            class="btn btn-outline-danger btn-sm"
+            data-bs-toggle="tooltip"
+            data-bs-title="Delete selected users"
+            disabled>
 
-            <i class="bi bi-trash"></i>
-        </button>
+        <i class="bi bi-trash"></i>
+    </button>
 
-        <!-- Delete Unverified -->
-        <button type="submit"
-                asp-controller="Home"
-                asp-action="DeleteUnverified"
-                class="btn btn-outline-danger cursor-pointer"
-                data-bs-toggle="tooltip"
-                title="Delete unverified users">
+    <button type="submit"
+            asp-controller="Home"
+            asp-action="DeleteUnverified"
+            class="btn btn-outline-danger btn-sm"
+            data-bs-toggle="tooltip"
+            data-bs-title="Delete all unverified users">
 
-            <i class="bi bi-person-x"></i>
-        </button>
+        <i class="bi bi-person-x"></i>
+    </button>
 
-    </div>
+</div>
 
     </div>
 
@@ -192,10 +191,28 @@
                             }
                         </td>
 
-                        <td>
-                            @user.Status
-                        </td>
+                       <td>
+                            @switch (user.Status)
+                            {
+                                case UserStatus.Active:
+                                    <span class="badge text-bg-success">
+                                        Active
+                                    </span>
+                                    break;
 
+                                case UserStatus.Blocked:
+                                    <span class="badge text-bg-danger">
+                                        Blocked
+                                    </span>
+                                    break;
+
+                                case UserStatus.Unverified:
+                                    <span class="badge text-bg-warning">
+                                        Unverified
+                                    </span>
+                                    break;
+                            }
+                        </td>
                     </tr>
                 }
 
