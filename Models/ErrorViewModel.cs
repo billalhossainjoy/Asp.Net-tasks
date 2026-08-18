@@ -1,4 +1,4 @@
-namespace Asp.Net_task3.Models;
+namespace Asp.Net_tasks.Models;
 
 public class ErrorViewModel
 {

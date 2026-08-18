@@ -20,6 +20,10 @@ public sealed class User
 
     public UserStatus Status {get; set;} = UserStatus.Unverified;
 
+    public string? EmailConfirmationToken {get; set;}
+
+    public DateTimeOffset? EmailConfirmationTokenExpiresAtUtc { get; set; }
+
     public DateTimeOffset CreatedAt {get; set;} = DateTimeOffset.UtcNow;
 
     public DateTimeOffset? LastLoginAt {get; set;}

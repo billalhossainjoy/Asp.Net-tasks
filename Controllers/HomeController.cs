@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Asp.Net_task3.Models;
+using Asp.Net_tasks.Models;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Asp.Net_task3.Controllers;
+namespace Asp.Net_tasks.Controllers;
 
 public class HomeController : Controller
 {

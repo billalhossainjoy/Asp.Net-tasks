@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Asp.Net_task3.ViewModel.Auth;
+namespace Asp.Net_tasks.ViewModel.Auth;
 
 public sealed class RegisterViewModel
 {

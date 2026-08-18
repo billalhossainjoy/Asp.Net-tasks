@@ -5,24 +5,24 @@
 namespace Asp.Net_tasks.Migrations
 {
     /// <inheritdoc />
-    public partial class RenameUserEmailIndex : Migration
+    public partial class AddEmailConfirmation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameIndex(
-                name: "Users_Email",
+            migrationBuilder.AddColumn<string>(
+                name: "EmailConfirmationToken",
                 table: "Users",
-                newName: "Email_Users");
+                type: "text",
+                nullable: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameIndex(
-                name: "Email_Users",
-                table: "Users",
-                newName: "Users_Email");
+            migrationBuilder.DropColumn(
+                name: "EmailConfirmationToken",
+                table: "Users");
         }
     }
 }

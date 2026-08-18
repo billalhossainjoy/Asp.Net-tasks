@@ -1,3 +1,5 @@
+using Asp.Net_task3.Services.Email;
+using Asp.Net_tasks.Services.Email;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+// Mail service
+builder.Services.Configure<SmtpOptions>(
+    builder.Configuration.GetSection("smtp")
+);
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddSingleton<IEmailQueue, EmailQueue>();
+builder.Services.AddHostedService<EmailBackgroundService>();
 
 
 // Authentication

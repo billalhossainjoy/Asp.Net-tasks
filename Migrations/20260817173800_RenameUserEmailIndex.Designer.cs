@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Asp.Net_task3.Migrations
+namespace Asp.Net_tasks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260817173800_RenameUserEmailIndex")]
