@@ -16,6 +16,8 @@
 
                     <form asp-controller="Auth" asp-action="Logout" method="post" class="d-flex justify-content-end align-items-center">
 
+                      @Html.AntiForgeryToken()
+
                         <button type="submit"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"

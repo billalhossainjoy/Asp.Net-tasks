@@ -153,8 +153,6 @@ public class AuthController : Controller
 
         _db.Users.Add(user);
 
-        user.LastLoginAt = DateTimeOffset.UtcNow;
-
         try
         {
             await _db.SaveChangesAsync();
@@ -165,9 +163,6 @@ public class AuthController : Controller
 
             return View(model);
         }
-
-        await ClaimUserAsync(user);
-
 
         var confirmationUrl = Url.Action(
         "ConfirmEmail",
@@ -183,7 +178,7 @@ public class AuthController : Controller
 
         TempData["SuccessMessage"] =
     "Registration successful. Please check your email.";
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Login", "Auth");
     }
 
     private EmailMessage VerificationTemplate(

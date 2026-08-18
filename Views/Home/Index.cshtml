@@ -63,20 +63,20 @@
             });
         });
 
-        const tooltipElements =
-            document.querySelectorAll(
-                '[data-bs-toggle="tooltip"]'
-            );
-
-        tooltipElements.forEach(element =>
-        {
-            new bootstrap.Tooltip(element);
+document
+    .querySelectorAll('[data-bs-toggle="tooltip"]')
+    .forEach(element =>
+    {
+        new bootstrap.Tooltip(element, {
+            animation: false
         });
+    });
     </script>
 }
 
 <form method="post">
 
+    @Html.AntiForgeryToken()
     <div class="card border-0 shadow-sm">
 
     <div class="card-header bg-white p-0">

@@ -33,6 +33,7 @@
                 <!-- Form -->
                 <form asp-action="Register" asp-controller="Auth" method="post">
 
+                    @Html.AntiForgeryToken()
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3">
                     </div>
 
