@@ -2,38 +2,148 @@
 
 @{
     ViewData["Title"] = "Users";
+    
+    List<Guid> selectedIds = new();
 }
+
 
 @section Scripts{
     <script>
-        const selectAll = document.getElementById("selectAll");
+        const selectAll =
+            document.getElementById("selectAll");
 
-        const userCheckboxes = document.querySelectorAll(".user-checkbox");
+        const checkboxes =
+            document.querySelectorAll(".user-checkbox");
 
-        selectAll.addEventListener("change", () => {
-            userCheckboxes.forEach(checkbox => {
-                checkbox.checked = selectAll.checked
-            })
-        })
+        const blockButton =
+            document.getElementById("blockButton");
+
+        const unblockButton =
+            document.getElementById("unblockButton");
+
+        const deleteButton =
+            document.getElementById("deleteButton");
+
+
+
+        function updateToolbar()
+        {
+            const selectedCount =
+                document.querySelectorAll(
+                    ".user-checkbox:checked"
+                ).length;
+
+            const disabled = selectedCount === 0;
+
+            blockButton.disabled = disabled;
+            unblockButton.disabled = disabled;
+            deleteButton.disabled = disabled;
+        }
+
+        selectAll.addEventListener("change", function ()
+        {
+            checkboxes.forEach(checkbox =>
+            {
+                checkbox.checked = selectAll.checked;
+            });
+
+            updateToolbar();
+        });
+                checkboxes.forEach(checkbox =>
+        {
+            checkbox.addEventListener("change", function ()
+            {
+                const allChecked =
+                    Array.from(checkboxes)
+                        .every(x => x.checked);
+
+                selectAll.checked = allChecked;
+
+                updateToolbar();
+            });
+        });
+
+        document
+            .querySelectorAll('[data-bs-toggle="tooltip"]')
+            .forEach(element =>
+            {
+                new bootstrap.Tooltip(element);
+            });
     </script>
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="h3 mb-1">Users</h1>
-        <p class="text-muted mb-0">
-            Manage registered users
-        </p>
-    </div>
-</div>
+<form method="post">
 
-<div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-white p-0">
+
+    <!-- Toolbar -->
+    <div class="d-flex align-items-center gap-2 border-bottom bg-white p-3">
+
+        <!-- Required: Block with text -->
+        <button type="submit"
+                id="blockButton"
+                asp-controller="Home"
+                asp-action="Block"
+                class="btn btn-outline-danger cursor-pointer"
+                disabled>
+            Block
+        </button>
+
+        <!-- Unblock -->
+        <button type="submit"
+                id="unblockButton"
+                asp-controller="Home"
+                asp-action="Unblock"
+                class="btn btn-outline-secondary cursor-pointer"
+                data-bs-toggle="tooltip"
+                title="Unblock selected users"
+                disabled>
+
+            <i class="bi bi-unlock"></i>
+        </button>
+
+        <!-- Delete -->
+        <button type="submit"
+                id="deleteButton"
+                asp-controller="Home"
+                asp-action="Delete"
+                class="btn btn-outline-danger cursor-pointer"
+                data-bs-toggle="tooltip"
+                title="Delete selected users"
+                disabled>
+
+            <i class="bi bi-trash"></i>
+        </button>
+
+        <!-- Delete Unverified -->
+        <button type="submit"
+                asp-controller="Home"
+                asp-action="DeleteUnverified"
+                class="btn btn-outline-danger cursor-pointer"
+                data-bs-toggle="tooltip"
+                title="Delete unverified users">
+
+            <i class="bi bi-person-x"></i>
+        </button>
+
+    </div>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        <!-- table here -->
+
+    <!-- Table -->
     <div class="table-responsive">
 
         <table class="table table-hover align-middle mb-0">
 
             <thead class="table-light">
                 <tr>
+
                     <th style="width: 50px;">
                         <input type="checkbox"
                                id="selectAll"
@@ -44,6 +154,7 @@
                     <th>Email</th>
                     <th>Last login</th>
                     <th>Status</th>
+
                 </tr>
             </thead>
 
@@ -55,8 +166,9 @@
 
                         <td>
                             <input type="checkbox"
-                                   class="form-check-input user-checkbox"
-                                   value="@user.Id" />
+                                   name="selectedIds"
+                                   value="@user.Id"
+                                   class="form-check-input user-checkbox" />
                         </td>
 
                         <td class="fw-semibold">
@@ -70,7 +182,7 @@
                         <td>
                             @if (user.LastLoginAt.HasValue)
                             {
-                                @user.LastLoginAt.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
+                                @user.LastLoginAt.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
                             }
                             else
                             {
@@ -92,4 +204,7 @@
         </table>
 
     </div>
-</div>
+    </div>
+
+
+</form>
