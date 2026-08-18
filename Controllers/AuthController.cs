@@ -179,12 +179,30 @@ public class AuthController : Controller
         },
         Request.Scheme);
 
-        await _emailQueue.QueueAsync(VerificationTemplate(user, confirmationUrl));
+    await _emailQueue.QueueAsync(VerificationTemplate(user, confirmationUrl));
 
         TempData["SuccessMessage"] =
     "Registration successful. Please check your email.";
         return RedirectToAction("Index", "Home");
     }
+
+    private EmailMessage VerificationTemplate(
+    User user,
+    string confirmationUrl)
+{
+    var body = EmailTemplateBuilder.Build(
+        title: "Confirm your email",
+        greetingName: user.Name,
+        message: "Thanks for registering. Please confirm your email address.",
+        buttonText: "Verify Email",
+        buttonUrl: confirmationUrl,
+        note: "This verification link expires in 24 hours.");
+
+    return new EmailMessage(
+        user.Email,
+        "Verify your email address",
+        body);
+}
 
 
     [HttpPost]
@@ -201,29 +219,33 @@ public class AuthController : Controller
     public async Task<IActionResult> ConfirmEmail(Guid userId, string token)
     {
         var user = await _db.Users.SingleOrDefaultAsync(x => x.Id == userId);
-        return View();
-    }
+        if(user is null) {
+            return NotFound();
+        }
 
-    private EmailMessage VerificationTemplate(User user, string? confirmationUrl)
-    {
-        var email = new EmailMessage(
-        user.Email,
-        "Confirm your email",
-        $"""
-        <h2>Welcome, {user.Name}</h2>
+        if(user.EmailConfirmationToken != token)
+        {
+            return BadRequest("Invalid Session.");
+        }
 
-        <p>Your account has been registered successfully.</p>
+        if(user.EmailConfirmationTokenExpiresAtUtc is null || user.EmailConfirmationTokenExpiresAtUtc < DateTimeOffset.UtcNow)
+        {
+            return BadRequest("Confirmation link has expired.");
+        }
 
-        <p>
-            <a href="{confirmationUrl}">
-                Confirm your email
-            </a>
-        </p>
+        if (user.Status != UserStatus.Blocked)
+        {
+            user.Status = UserStatus.Active;
+        }
 
-        <p>This confirmation link expires in 24 hours.</p>
-        """);
+        user.EmailConfirmationToken = null;
+        user.EmailConfirmationTokenExpiresAtUtc = null;
+        await _db.SaveChangesAsync();
 
-        return email;
+        
+        TempData["SuccessMessage"] = "Your message has been confirmed.";
+
+        return RedirectToAction("Index", "Home");
     }
 
     private static string GenerateConfirmationToken()
