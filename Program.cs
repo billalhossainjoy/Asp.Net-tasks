@@ -67,8 +67,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseRouting();
-
+app.UseAuthentication();
+app.UseMiddleware<CurrentValidationMiddleware>();
 app.UseAuthorization();
 
 app.MapStaticAssets();

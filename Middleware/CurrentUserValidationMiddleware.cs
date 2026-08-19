@@ -54,7 +54,7 @@ public sealed class CurrentValidationMiddleware
     private async Task RejectAuthentication(HttpContext context)
     {
         await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        context.Response.Redirect("/Account/Login");
+        context.Response.Redirect("/Auth/Login");
 
         return;
     }
