@@ -11,12 +11,23 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
-// Mail service
-builder.Services.Configure<SmtpOptions>(
-    builder.Configuration.GetSection("smtp")
-);
+// Resend's HTTPS API works on hosting plans that block outbound SMTP ports.
+// Continue using the application's existing Smtp configuration variables.
+builder.Services.AddOptions<SmtpOptions>()
+    .Bind(builder.Configuration.GetSection("Smtp"))
+    .Validate(
+        options => !string.IsNullOrWhiteSpace(options.Password),
+        "Smtp__Password is required.")
+    .Validate(
+        options => !string.IsNullOrWhiteSpace(options.FromEmail),
+        "Smtp__FromEmail is required.")
+    .ValidateOnStart();
 
-builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddHttpClient<IEmailSender, EmailSender>(client =>
+{
+    client.BaseAddress = new Uri("https://api.resend.com/");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 builder.Services.AddSingleton<IEmailQueue, EmailQueue>();
 builder.Services.AddHostedService<EmailBackgroundService>();
 
@@ -38,6 +49,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+// Apply pending EF Core migrations when the container starts. This keeps a
+// newly provisioned production database in sync with the application.
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

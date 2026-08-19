@@ -27,6 +27,10 @@ public sealed class EmailBackgroundService
 
             try
             {
+                _logger.LogInformation(
+                    "Sending confirmation email to {Email}",
+                    message.To);
+
                 await using var scope =
                     _scopeFactory.CreateAsyncScope();
 
@@ -37,6 +41,10 @@ public sealed class EmailBackgroundService
                 await emailSender.SendVerificationMailAsync(
                     message,
                     stoppingToken);
+
+                _logger.LogInformation(
+                    "Confirmation email accepted by Resend for {Email}",
+                    message.To);
             }
             catch (Exception exception)
             {

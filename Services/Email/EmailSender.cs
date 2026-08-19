@@ -1,61 +1,50 @@
-using MailKit.Net.Smtp;
-using MailKit.Security;
 using Microsoft.Extensions.Options;
-using MimeKit;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace Asp.Net_tasks.Services.Email;
 
 public sealed class EmailSender : IEmailSender
 {
+    private readonly HttpClient _httpClient;
     private readonly SmtpOptions _options;
-    public EmailSender(IOptions<SmtpOptions> options)
+
+    public EmailSender(
+        HttpClient httpClient,
+        IOptions<SmtpOptions> options)
     {
+        _httpClient = httpClient;
         _options = options.Value;
     }
 
-    public async Task SendVerificationMailAsync(EmailMessage message,
-            CancellationToken cancellationToken
-        )
+    public async Task SendVerificationMailAsync(
+        EmailMessage message,
+        CancellationToken cancellationToken)
     {
-        var mail = new MimeMessage();
+        var from = string.IsNullOrWhiteSpace(_options.FromName)
+            ? _options.FromEmail
+            : $"{_options.FromName} <{_options.FromEmail}>";
 
-        mail.From.Add(
-            new MailboxAddress(
-                _options.FromName,
-                _options.FromEmail));
-
-        mail.To.Add(
-            MailboxAddress.Parse(message.To)
-        );
-
-        mail.Subject = message.Subject;
-
-        mail.Body = new TextPart("html")
+        using var request = new HttpRequestMessage(HttpMethod.Post, "emails")
         {
-            Text = message.HtmlBody
+            Content = JsonContent.Create(new
+            {
+                from,
+                to = new[] { message.To },
+                subject = message.Subject,
+                html = message.HtmlBody
+            })
         };
 
+        request.Headers.Authorization =
+            new AuthenticationHeaderValue("Bearer", _options.Password);
 
-        using var client = new SmtpClient();
-
-
-        await client.ConnectAsync(
-            _options.Host,
-            _options.Port,
-            SecureSocketOptions.StartTls,
-            cancellationToken);
-
-        await client.AuthenticateAsync(
-            _options.Username,
-            _options.Password,
-            cancellationToken);
-
-        await client.SendAsync(
-            mail,
-            cancellationToken);
-
-        await client.DisconnectAsync(
-            true,
-            cancellationToken);
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync(cancellationToken);
+            throw new InvalidOperationException(
+                $"Resend API returned {(int)response.StatusCode}: {error}");
+        }
     }
 }
